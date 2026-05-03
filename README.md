@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # IMS – Mission-Critical Incident Management System
 
 A production-grade distributed incident management platform that ingests high-throughput failure signals, deduplicates them into tracked Work Items, enforces a mandatory RCA-gated workflow, and provides a real-time React dashboard.
@@ -9,7 +9,7 @@ A production-grade distributed incident management platform that ingests high-th
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│                React Dashboard  (port 3000)                   │
+│                React Dashboard  (port 3001)                   │
 │   Live Feed · Incident Detail · RCA Form · Metrics Bar        │
 └───────────────────────────┬──────────────────────────────────┘
                             │  REST + WebSocket
