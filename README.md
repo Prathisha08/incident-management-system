@@ -9,23 +9,23 @@ A production-grade distributed incident management platform that ingests high-th
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│                React Dashboard  (port 3001)                   │
-│   Live Feed · Incident Detail · RCA Form · Metrics Bar        │
+│                React Dashboard  (port 3001)                  │
+│   Live Feed · Incident Detail · RCA Form · Metrics Bar       │
 └───────────────────────────┬──────────────────────────────────┘
                             │  REST + WebSocket
 ┌───────────────────────────▼──────────────────────────────────┐
-│                  Go Backend  (port 8080)                       │
-│                                                               │
+│                  Go Backend  (port 8080)                     │
+│                                                              │
 │  Rate Limiter → Signal Buffer (100K) → Worker Pool (×20)     │
-│                                   ↓                           │
-│                            Debouncer (sync.Map)               │
+│                                   ↓                          │
+│                            Debouncer (sync.Map)              │
 │                    ┌──────────┼──────────┐                   │
-│               PostgreSQL   MongoDB     Redis                  │
-│             (work items   (signals    (dashboard              │
-│               + RCA)       audit log)  hot-path)              │
-│                                                               │
-│  State Machine (State pattern) · Alerter (Strategy pattern)  │
-│  WebSocket Hub · Metrics Goroutine (/5s stdout)               │
+│               PostgreSQL   MongoDB     Redis                 │
+│             (work items   (signals    (dashboard             │
+│               + RCA)       audit log)  hot-path)             │
+│                                                              │
+│  State Machine (State pattern) · Alerter (Strategy pattern)  | 
+│  WebSocket Hub · Metrics Goroutine (/5s stdout)              │
 └──────────────────────────────────────────────────────────────┘
 ```
 
