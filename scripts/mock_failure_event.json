@@ -1,0 +1,54 @@
+{
+  "_comment": "Simulates a cascading RDBMS outage followed by MCP_HOST degradation",
+  "scenario": "RDBMS Primary Outage",
+  "events": [
+    {
+      "component_id": "POSTGRES_PRIMARY_01",
+      "component_type": "RDBMS",
+      "error_code": "CONN_REFUSED",
+      "message": "Connection refused to primary PostgreSQL node on port 5432. Health check failed.",
+      "severity": "CRITICAL",
+      "metadata": { "host": "db-primary-01.internal", "port": 5432, "retries": 3 }
+    },
+    {
+      "component_id": "POSTGRES_PRIMARY_01",
+      "component_type": "RDBMS",
+      "error_code": "REPLICA_LAG_EXCEEDED",
+      "message": "Replica lag exceeded 30s threshold. Read replicas may return stale data.",
+      "severity": "HIGH",
+      "metadata": { "lag_seconds": 47, "replica_host": "db-replica-01.internal" }
+    },
+    {
+      "component_id": "MCP_HOST_CLUSTER_A",
+      "component_type": "MCP_HOST",
+      "error_code": "UPSTREAM_TIMEOUT",
+      "message": "MCP Host unable to reach RDBMS upstream. Requests timing out after 5000ms.",
+      "severity": "HIGH",
+      "metadata": { "upstream": "POSTGRES_PRIMARY_01", "timeout_ms": 5000, "failed_requests": 142 }
+    },
+    {
+      "component_id": "CACHE_CLUSTER_01",
+      "component_type": "CACHE",
+      "error_code": "EVICTION_SPIKE",
+      "message": "Cache eviction rate spiked 400% as fallback load increases due to RDBMS outage.",
+      "severity": "MEDIUM",
+      "metadata": { "eviction_rate": 4200, "memory_usage_pct": 94 }
+    },
+    {
+      "component_id": "API_GATEWAY_01",
+      "component_type": "API",
+      "error_code": "LATENCY_P99_BREACH",
+      "message": "P99 API latency exceeded SLO (500ms). Currently at 3200ms due to DB timeouts.",
+      "severity": "HIGH",
+      "metadata": { "p99_ms": 3200, "slo_ms": 500, "error_rate_pct": 23.4 }
+    },
+    {
+      "component_id": "QUEUE_KAFKA_01",
+      "component_type": "QUEUE",
+      "error_code": "CONSUMER_LAG",
+      "message": "Kafka consumer group IMS-workers lag growing. Messages not being processed.",
+      "severity": "MEDIUM",
+      "metadata": { "consumer_group": "ims-workers", "lag": 18420, "topic": "ims.events" }
+    }
+  ]
+}

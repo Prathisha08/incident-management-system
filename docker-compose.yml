@@ -1,0 +1,78 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ims
+      POSTGRES_PASSWORD: ims
+      POSTGRES_DB: ims
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ims"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SERVER_ADDR: ":8080"
+      POSTGRES_DSN: "postgres://ims:ims@postgres:5432/ims?sslmode=disable"
+      MONGO_URI: "mongodb://mongo:27017"
+      MONGO_DATABASE: "ims"
+      REDIS_ADDR: "redis:6379"
+      WORKER_COUNT: "20"
+      BUFFER_SIZE: "100000"
+      RATE_LIMIT: "2000"
+      RATE_BURST: "5000"
+    depends_on:
+      postgres: { condition: service_healthy }
+      mongo:    { condition: service_healthy }
+      redis:    { condition: service_healthy }
+    restart: on-failure
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:80"
+    depends_on:
+      - backend
+
+volumes:
+  pg_data:
+  mongo_data:
+  redis_data:

@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body { font-family: 'Inter', sans-serif; }
+  code, pre { font-family: 'JetBrains Mono', monospace; }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #2a2d3a transparent;
+  }
+}
