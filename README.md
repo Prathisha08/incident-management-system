@@ -52,7 +52,7 @@ docker-compose up --build
 
 | Service | URL |
 |---------|-----|
-| Dashboard | http://localhost:3000 |
+| Dashboard | http://localhost:3001 |
 | Backend API | http://localhost:8080 |
 | Health check | http://localhost:8080/health |
 | Metrics | http://localhost:8080/metrics |
